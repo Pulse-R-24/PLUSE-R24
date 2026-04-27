@@ -11,7 +11,7 @@ import { ThreatMap } from '../../components/ui/ThreatMap';
 import { LiveTicker } from '../../components/ui/LiveTicker';
 
 // National Intelligence Domains
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 3;
 const DOMAINS = [
     'All',
     'Fire incidents',
@@ -154,17 +154,17 @@ export const PublicHome: React.FC = () => {
     const paginatedItems = useMemo(() => {
         if (filteredItems.length === 0) return [];
         if (currentPage === 1) {
-            return filteredItems.slice(1, 7); // 6 cards below the featured hero
+            return filteredItems.slice(1, 4); // 3 cards below the featured hero
         }
-        const start = 7 + (currentPage - 2) * ITEMS_PER_PAGE;
+        const start = 4 + (currentPage - 2) * ITEMS_PER_PAGE;
         const end = start + ITEMS_PER_PAGE;
         return filteredItems.slice(start, end);
     }, [filteredItems, currentPage]);
 
     const totalPages = useMemo(() => {
         if (filteredItems.length <= 1) return 1;
-        // page 1 holds 1 featured + 6 grid = 7 items total
-        const remaining = filteredItems.length - 7;
+        // page 1 holds 1 featured + 3 grid = 4 items total
+        const remaining = filteredItems.length - 4;
         if (remaining <= 0) return 1;
         return 1 + Math.ceil(remaining / ITEMS_PER_PAGE);
     }, [filteredItems]);
@@ -231,7 +231,7 @@ export const PublicHome: React.FC = () => {
                                 <div className="h-px w-10 bg-maroon-500"></div>
                                 <div className="w-2.5 h-2.5 rounded-full bg-maroon-500"></div>
                                 <span className="text-xs font-mono uppercase tracking-widest text-gray-500 font-semibold">
-                                    Where the Nation's Pulse Meets
+                                    Where the Nation's Pulse Meets Insights
                                 </span>
                             </div>
 
@@ -251,18 +251,7 @@ export const PublicHome: React.FC = () => {
                                 <span className="text-[11px]">{issueNumber}</span>
                             </div>
 
-                            {/* CTA Button */}
-                            <div className="flex items-center gap-4">
-                                <div className="h-px w-10 bg-maroon-500"></div>
-                                <div className="w-2.5 h-2.5 rounded-full bg-maroon-500"></div>
-                                <button
-                                    type="button"
-                                    onClick={() => scrollToSection('feed')}
-                                    className="text-intel-900 font-bold text-sm uppercase tracking-widest hover:text-maroon-600 transition-colors"
-                                >
-                                    View Intelligence Feed
-                                </button>
-                            </div>
+
                         </div>
 
                         {/* Right: Live Interactive Threat Map */}
@@ -282,8 +271,6 @@ export const PublicHome: React.FC = () => {
             <div className="bg-intel-800 py-4 px-6">
                 <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-inter">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-maroon-400 animate-pulse"></div>
-                        <span className="text-maroon-300 font-bold uppercase tracking-widest">Live Intelligence Feed</span>
                     </div>
                     <span className="text-intel-300 font-mono text-[11px]">{issueNumber}</span>
                     <span className="text-intel-300 italic hidden md:block">Ranked by national incident impact and strategic significance</span>
@@ -583,7 +570,7 @@ export const PublicHome: React.FC = () => {
                         <span className="text-xs font-mono uppercase tracking-widest text-gray-500 font-semibold">About PULSE-R24</span>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-3">
                             <h2 className="font-clarendon text-3xl font-black text-intel-900 mb-4">
                                 Strategic situational awareness for decision makers
                             </h2>
@@ -593,15 +580,6 @@ export const PublicHome: React.FC = () => {
                                 supports rapid dissemination and structured approvals so the latest updates
                                 reach stakeholders without delay.
                             </p>
-                        </div>
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Key Focus</p>
-                            <ul className="text-sm text-gray-600 space-y-2">
-                                <li>National and regional threat intelligence</li>
-                                <li>Verified reporting and approval workflow</li>
-                                <li>OSINT-assisted monitoring and alerts</li>
-                                <li>Operational dashboards and analytics</li>
-                            </ul>
                         </div>
                     </div>
                 </div>

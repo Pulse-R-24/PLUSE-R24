@@ -48,9 +48,7 @@ export const Navbar: React.FC = () => {
                     <div className="flex items-center justify-end gap-3 md:gap-5 order-2 md:order-none">
                         {/* Desktop nav links */}
                         <div className="hidden lg:flex items-center gap-8">
-                            <Link to="/?section=feed" className="text-gray-600 hover:text-maroon-600 font-inter text-sm font-medium transition-all hover:scale-105">
-                                Intelligence Feed
-                            </Link>
+
                             <Link to="/?section=about" className="text-gray-600 hover:text-maroon-600 font-inter text-sm font-medium transition-all hover:scale-105">
                                 About Us
                             </Link>
@@ -88,13 +86,7 @@ export const Navbar: React.FC = () => {
             {mobileOpen && (
                 <div className="lg:hidden border-t border-gray-200 bg-white shadow-sm">
                     <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-3">
-                        <Link
-                            to="/?section=feed"
-                            onClick={() => setMobileOpen(false)}
-                            className="text-gray-700 hover:text-maroon-600 font-inter text-sm font-semibold"
-                        >
-                            Intelligence Feed
-                        </Link>
+
                         <Link
                             to="/?section=about"
                             onClick={() => setMobileOpen(false)}
