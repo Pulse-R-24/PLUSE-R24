@@ -67,21 +67,31 @@ export const Footer: React.FC = () => {
                                 <div className="h-px w-8 bg-maroon-500/30"></div>
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Initiative</h3>
                             </div>
-                            <div className="space-y-4">
-                                <div className="group">
-                                    <p className="text-sm font-semibold text-white/80 group-hover:text-white transition-colors leading-snug">
-                                        Post Graduate Diploma in Security and Corporate Intelligence Management
-                                    </p>
-                                    <p className="text-[11px] text-white/30 mt-2 font-medium">Batch of 2025-2026</p>
-                                    <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                            <div className="space-y-6">
+                                <div className="group flex gap-4">
+                                    <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white/5 p-2 border border-white/10 group-hover:border-maroon-500/50 transition-all shadow-inner overflow-hidden">
+                                        <img src="/logos/pgdscim-logo.png" alt="PGDSCIM Logo" className="w-full h-full object-contain filter brightness-110" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-white/80 group-hover:text-white transition-colors leading-snug">
+                                            Post Graduate Diploma in Security and Corporate Intelligence Management
+                                        </p>
+                                        <p className="text-[11px] text-white/30 mt-1.5 font-medium">Batch of 2025-2026</p>
+                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                    </div>
                                 </div>
-                                <div className="pt-4 border-t border-white/5">
-                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2">Technical Execution</p>
-                                    <p className="text-sm font-semibold text-white/80 leading-snug">
-                                        Post Graduate Diploma in Cyber Security and Digital Forensics
-                                    </p>
-                                    <p className="text-[11px] text-white/30 mt-1 font-medium">Batch of 2025-2026</p>
-                                    <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                <div className="pt-6 border-t border-white/5 group flex gap-4">
+                                    <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-white/5 p-2 border border-white/10 group-hover:border-maroon-500/50 transition-all shadow-inner overflow-hidden">
+                                        <img src="/logos/cyber-logo.png" alt="Cyber Security Logo" className="w-full h-full object-contain filter brightness-110" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2">Technical Execution</p>
+                                        <p className="text-sm font-semibold text-white/80 leading-snug">
+                                            Post Graduate Diploma in Cyber Security and Digital Forensics
+                                        </p>
+                                        <p className="text-[11px] text-white/30 mt-1.5 font-medium">Batch of 2025-2026</p>
+                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -94,10 +104,15 @@ export const Footer: React.FC = () => {
                                 <div className="h-px w-8 bg-blue-500/30"></div>
                                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Governance</h3>
                             </div>
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2">Guided By</p>
-                                <p className="text-sm font-bold text-white/80">ISSP</p>
-                                <p className="text-[11px] text-white/40 leading-tight">International Society for Security Professionals</p>
+                            <div className="flex gap-4 group">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white/5 p-1.5 border border-white/10 group-hover:border-blue-500/50 transition-all overflow-hidden">
+                                    <img src="/logos/issp-logo.png" alt="ISSP Logo" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-1">Guided By</p>
+                                    <p className="text-sm font-bold text-white/80 group-hover:text-white transition-colors">ISSP</p>
+                                    <p className="text-[11px] text-white/40 leading-tight">International Society for Security Professionals</p>
+                                </div>
                             </div>
                         </div>
 
