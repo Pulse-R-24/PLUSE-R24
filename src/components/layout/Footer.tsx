@@ -21,104 +21,123 @@ export const Footer: React.FC = () => {
     };
 
     return (
-        <footer style={{ backgroundColor: '#0D1542' }} className="border-t border-white/10 mt-20 pt-16 pb-8 font-inter">
+        <footer style={{ backgroundColor: '#070B24' }} className="border-t border-white/5 mt-20 pt-20 pb-10 font-inter text-white">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 {/* Main Footer Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                    {/* Brand & Newsletter */}
-                    <div className="col-span-1 md:col-span-2">
-                        <h2 className="font-clarendon text-3xl font-black text-maroon-600 mb-4">PULSE-R<sup className="text-xl">24</sup></h2>
-                        <p className="text-white/60 text-sm leading-relaxed mb-8 max-w-sm">
-                            Where the nation's security pulse meets Insights. Delivers forward-looking updates on emerging risks and developments impacting business continuity and organizational resilience.
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
+                    
+                    {/* Column 1: Brand & About */}
+                    <div className="md:col-span-5 space-y-8">
+                        <div>
+                            <h2 className="font-clarendon text-4xl font-black text-maroon-600 mb-2">PULSE-R<sup className="text-2xl">24</sup></h2>
+                            <p className="text-white/40 text-[10px] uppercase tracking-[0.2em] font-bold">Puducherry Campus Intelligence Initiative</p>
+                        </div>
+                        <p className="text-white/50 text-sm leading-relaxed max-w-md">
+                            A forward-looking security intelligence bulletin delivering situational awareness on emerging risks impacting business continuity and organizational resilience across India's Tier-1 cities.
                         </p>
-
-                        <div className="mt-6">
-                            <p className="font-medium text-white/80 mb-3 text-sm">Subscribe to Intelligence Briefs</p>
-                            <form onSubmit={handleSubscribe} className="flex items-end max-w-sm">
+                        <div className="pt-4">
+                            <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mb-4">Subscribe to Intel Briefs</p>
+                            <form onSubmit={handleSubscribe} className="flex max-w-sm group">
                                 <input
                                     type="email"
-                                    placeholder="Enter your email"
-                                    className="bg-transparent border-0 border-b border-white/30 rounded-none px-0 py-2 w-full text-sm text-white placeholder-white/40 focus:ring-0 focus:border-red-400 transition-colors outline-none"
+                                    placeholder="your@email.com"
+                                    className="bg-white/5 border border-white/10 rounded-l-md px-4 py-3 w-full text-sm text-white placeholder-white/20 focus:bg-white/10 focus:border-maroon-500/50 transition-all outline-none"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <button
                                     type="submit"
-                                    className="ml-4 px-4 py-2 border border-red-400 text-red-400 hover:bg-red-400 hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors whitespace-nowrap"
+                                    className="px-6 py-3 bg-maroon-600 hover:bg-maroon-700 text-white text-[11px] font-black uppercase tracking-widest rounded-r-md transition-all active:scale-95"
                                 >
-                                    Subscribe
+                                    Join
                                 </button>
                             </form>
                             {message && (
-                                <p className={`mt-3 text-xs ${isError ? 'text-red-300' : 'text-emerald-300'}`}>
+                                <p className={`mt-3 text-[10px] font-medium tracking-wide ${isError ? 'text-red-400' : 'text-emerald-400'}`}>
                                     {message}
                                 </p>
                             )}
                         </div>
                     </div>
 
-                    {/* Institutional Links */}
-                    <div className="space-y-8">
-                        <div>
-                            <div className="flex items-center gap-2 mb-6">
-                                <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                                <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Initiative By</h3>
+                    {/* Column 2: Initiatives & Teams */}
+                    <div className="md:col-span-4 space-y-12">
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="h-px w-8 bg-maroon-500/30"></div>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Initiative</h3>
                             </div>
-                            <ul className="space-y-4">
-                                <li>
-                                    <span className="block text-sm font-medium text-white/90 leading-relaxed">
-                                        Post Graduate Diploma in Security and Corporate Intelligence Management 2025-2026 batch
-                                    </span>
-                                    <span className="block text-xs text-white/50 mt-1">Rashtriya Raksha University, Puducherry</span>
-                                </li>
-                                <li className="pt-2">
-                                    <span className="block text-xs text-white/40 mb-1">Guided By</span>
-                                    <span className="block text-sm font-medium text-white/90">International Society for Security Professionals</span>
-                                    <span className="block text-xs font-mono text-red-400 mt-1">ISSP</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-                                <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Technical Team</h3>
+                            <div className="space-y-4">
+                                <div className="group">
+                                    <p className="text-sm font-semibold text-white/80 group-hover:text-white transition-colors leading-snug">
+                                        Post Graduate Diploma in Security and Corporate Intelligence Management
+                                    </p>
+                                    <p className="text-[11px] text-white/30 mt-2 font-medium">Batch of 2025-2026</p>
+                                    <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                </div>
+                                <div className="pt-4 border-t border-white/5">
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2">Technical Execution</p>
+                                    <p className="text-sm font-semibold text-white/80 leading-snug">
+                                        Post Graduate Diploma in Cyber Security and Digital Forensics
+                                    </p>
+                                    <p className="text-[11px] text-white/30 mt-1 font-medium">Batch of 2025-2026</p>
+                                </div>
                             </div>
-                            <span className="block text-sm font-medium text-white/90 leading-relaxed">
-                                Post Graduate Diploma in Cyber Security and Digital Forensics 2025-2026 batch
-                            </span>
                         </div>
                     </div>
 
-                    {/* Connect */}
-                    <div>
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                            <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Connect</h3>
+                    {/* Column 3: Governance & Connect */}
+                    <div className="md:col-span-3 space-y-12">
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="h-px w-8 bg-blue-500/30"></div>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Governance</h3>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2">Guided By</p>
+                                <p className="text-sm font-bold text-white/80">ISSP</p>
+                                <p className="text-[11px] text-white/40 leading-tight">International Society for Security Professionals</p>
+                            </div>
                         </div>
-                        <ul className="space-y-3 mb-8">
-                            <li><a href="mailto:editorial@pulser24.in" className="text-sm text-white/60 hover:text-red-400 transition-colors">Contact Editorial</a></li>
-                            <li><a href="mailto:editorial@pulser24.in?subject=Submission%20Guidelines" className="text-sm text-white/60 hover:text-red-400 transition-colors">Submission Guidelines</a></li>
-                            <li><a href="#/admin" className="text-sm text-white/60 hover:text-red-400 transition-colors">Admin Portal</a></li>
-                        </ul>
-                        <div className="flex gap-3">
-                            <a href="https://rru.ac.in" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-red-400 hover:border-red-400 transition-all"><Globe size={14} /></a>
-                            <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-red-400 hover:border-red-400 transition-all"><Linkedin size={14} /></a>
-                            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/50 hover:text-red-400 hover:border-red-400 transition-all"><Twitter size={14} /></a>
+
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3">
+                                <div className="h-px w-8 bg-emerald-500/30"></div>
+                                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Connect</h3>
+                            </div>
+                            <nav className="flex flex-col gap-3">
+                                <a href="mailto:editorial@pulser24.in" className="text-[13px] text-white/50 hover:text-maroon-500 transition-colors flex items-center gap-2 group">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-maroon-500 transition-colors"></span>
+                                    Contact Editorial
+                                </a>
+                                <a href="#/admin" className="text-[13px] text-white/50 hover:text-maroon-500 transition-colors flex items-center gap-2 group">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-maroon-500 transition-colors"></span>
+                                    Admin Portal
+                                </a>
+                            </nav>
+                            <div className="flex gap-4 pt-4">
+                                <a href="https://rru.ac.in" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Globe size={16} /></a>
+                                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Linkedin size={16} /></a>
+                                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Twitter size={16} /></a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-xs text-white/40 text-center md:text-left">
-                        (c) {today.getFullYear()} PULSE-R24 Intelligence Network. All rights reserved. <br className="md:hidden" />
-                        For informational and awareness purposes only.
-                    </p>
-                    <div className="flex gap-4 text-xs text-white/40">
-                        <a href="#/privacy" className="hover:text-white/80 transition-colors">Privacy Policy</a>
-                        <span>|</span>
-                        <a href="#/terms" className="hover:text-white/80 transition-colors">Terms of Use</a>
+                <div className="border-t border-white/5 pt-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="space-y-1">
+                        <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] text-center md:text-left">
+                            © {today.getFullYear()} PULSE-R24 Intelligence Network. All rights reserved.
+                        </p>
+                        <p className="text-[9px] text-white/10 uppercase tracking-widest text-center md:text-left">
+                            AN INSTITUTIONAL INTELLIGENCE PRODUCT • FOR INFORMATIONAL PURPOSES ONLY
+                        </p>
+                    </div>
+                    <div className="flex gap-8 text-[10px] font-bold uppercase tracking-widest text-white/20">
+                        <a href="#/privacy" className="hover:text-maroon-500 transition-colors">Privacy</a>
+                        <a href="#/terms" className="hover:text-maroon-500 transition-colors">Terms</a>
+                        <a href="#/security" className="hover:text-maroon-500 transition-colors">Security</a>
                     </div>
                 </div>
             </div>
