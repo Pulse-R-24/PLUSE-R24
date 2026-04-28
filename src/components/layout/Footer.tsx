@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Linkedin, Twitter } from 'lucide-react';
+import { Globe, Linkedin, Instagram } from 'lucide-react';
 
 export const Footer: React.FC = () => {
     const today = new Date();
@@ -118,8 +118,8 @@ export const Footer: React.FC = () => {
                             </nav>
                             <div className="flex gap-4 pt-4">
                                 <a href="https://rru.ac.in" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Globe size={16} /></a>
-                                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Linkedin size={16} /></a>
-                                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Twitter size={16} /></a>
+                                <a href="https://www.linkedin.com/company/rashtriya-raksha-university-puducherry-campus/posts/?feedView=all" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Linkedin size={16} /></a>
+                                <a href="https://www.instagram.com/rru.puducherrycampus/" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/30 hover:bg-maroon-600 hover:text-white transition-all shadow-inner"><Instagram size={16} /></a>
                             </div>
                         </div>
                     </div>
