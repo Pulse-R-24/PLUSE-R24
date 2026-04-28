@@ -81,6 +81,7 @@ export const Footer: React.FC = () => {
                                         Post Graduate Diploma in Cyber Security and Digital Forensics
                                     </p>
                                     <p className="text-[11px] text-white/30 mt-1 font-medium">Batch of 2025-2026</p>
+                                    <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
                                 </div>
                             </div>
                         </div>
