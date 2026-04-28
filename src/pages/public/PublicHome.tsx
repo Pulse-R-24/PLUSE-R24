@@ -645,38 +645,6 @@ export const PublicHome: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-8 bg-gray-50 p-8 md:p-12 rounded-3xl">
-                            <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Leadership & Mentorship</h3>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                                <div className="space-y-2">
-                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Visionary Leadership</h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. John Paul Manickam</p>
-                                    <p className="text-xs text-gray-500 leading-relaxed">Distinguished professional in corporate security. His forward-looking approach and deep domain expertise have been central to shaping the foundation and direction of this platform.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Strategic Support</h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Rahul Ethirajan</p>
-                                    <p className="text-xs text-gray-500 leading-relaxed">Strategic insights and consistent guidance have contributed significantly to the relevance and execution of this bulletin.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Institutional Framework</h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Arsh Ganeshan</p>
-                                    <p className="text-xs text-gray-500 leading-relaxed">Campus Director, whose administrative vision and emphasis on academic excellence provide a strong institutional framework.</p>
-                                </div>
-                                <div className="space-y-2">
-                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Academic Mentorship</h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Sharuhasan Shankar</p>
-                                    <p className="text-xs text-gray-500 leading-relaxed">Course Coordinator, ensuring the bulletin maintains high analytical standards and professional quality through hands-on mentorship.</p>
-                                </div>
-                            </div>
-
-                            <div className="mt-10 pt-8 border-t border-gray-200">
-                                <p className="text-gray-600 text-sm italic leading-relaxed">
-                                    A central role has been played by the students of RRU, Puducherry Campus, from the SCIM program. Their dedication, analytical rigor, and collaborative approach have been instrumental in delivering depth, accuracy, and consistency to the bulletin.
-                                </p>
-                            </div>
-                        </div>
 
                         <div className="space-y-6 pt-8">
                             <h3 className="font-playfair text-2xl font-bold text-gray-900">About Rashtriya Raksha University (RRU)</h3>
