@@ -29,7 +29,7 @@ export const Footer: React.FC = () => {
                     <div className="col-span-1 md:col-span-2">
                         <h2 className="font-clarendon text-3xl font-black text-maroon-600 mb-4">PULSE-R<sup className="text-xl">24</sup></h2>
                         <p className="text-white/60 text-sm leading-relaxed mb-8 max-w-sm">
-                            Where the nation's security pulse meets insight. Delivers forward-looking updates on emerging risks and developments impacting business continuity and organizational resilience.
+                            Where the nation's security pulse meets Insights. Delivers forward-looking updates on emerging risks and developments impacting business continuity and organizational resilience.
                         </p>
 
                         <div className="mt-6">
