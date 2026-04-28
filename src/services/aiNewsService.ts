@@ -28,7 +28,8 @@ export const aiNewsService = {
         }
 
         const query = encodeURIComponent(`${state} India security news`);
-        const url = `https://gnews.io/api/v4/search?q=${query}&lang=en&country=in&max=10&apikey=${GNEWS_API_KEY}`;
+        const targetUrl = `https://gnews.io/api/v4/search?q=${query}&lang=en&country=in&max=10&apikey=${GNEWS_API_KEY}`;
+        const url = `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
 
         try {
             const response = await fetch(url);

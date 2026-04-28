@@ -13,7 +13,10 @@ const RSS_SOURCES = [
   { name: 'NDTV India', url: 'https://feeds.feedburner.com/ndtvnews-top-stories' }
 ];
 
-const RSS2JSON_BASE = '/.netlify/functions/osint-proxy?rss_url=';
+const RSS2JSON_BASE = 'https://api.rss2json.com/v1/api.json?rss_url='; // Directly use RSS2JSON or our proxy if needed
+// However, since we have a proxy now:
+const PROXY_BASE = '/api/proxy?url=';
+
 
 // Strategic NLP keywords for severity scoring
 const CRITICAL_KEYWORDS = ['attack', 'terror', 'blast', 'crash', 'dead', 'killed', 'cyber', 'hack', 'breach', 'critical', 'explosion', 'ambush', 'insurgency', 'border conflict'];
@@ -65,14 +68,14 @@ export const osintService = {
       
       const fetchPromises = RSS_SOURCES.map(source => {
         const feedUrl = `${source.url}${source.url.includes('?') ? '&' : '?'}t=${cacheBust}`;
-        const proxyUrl = `${RSS2JSON_BASE}${encodeURIComponent(feedUrl)}`;
+        const targetUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+        const proxyUrl = `${PROXY_BASE}${encodeURIComponent(targetUrl)}`;
         
         return fetch(proxyUrl)
           .then(async res => {
             if (!res.ok) {
-              const fallbackUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-              const fallbackRes = await fetch(fallbackUrl);
-              return fallbackRes.json();
+              // Fallback to direct RSS2JSON if proxy fails, or another proxy attempt
+              return res.json();
             }
             return res.json();
           })
