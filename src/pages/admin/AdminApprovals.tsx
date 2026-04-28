@@ -16,7 +16,8 @@ export const AdminApprovals: React.FC = () => {
         const user = await storageService.getAuth();
         setCurrentUser(user);
         const items = await storageService.getNewsItems();
-        setPending(items.filter(i => i.status === 'pending_approval'));
+        // Filter for pending items that are NOT from OSINT feed
+        setPending(items.filter(i => i.status === 'pending_approval' && i.meta?.source !== 'osint_feed'));
     };
 
     useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
     ChevronLeft, Clock, Share2, Printer, Copy, CheckCheck, ChevronRight,
-    Twitter, AlertTriangle, BookOpen
+    Twitter, AlertTriangle, BookOpen, FileText
 } from 'lucide-react';
 import { storageService } from '../../services/storageService';
 import { NewsItem, LayoutTemplate, SeverityLevel } from '../../types';
@@ -154,9 +154,9 @@ export const PublicDetail: React.FC = () => {
             {/* ─── BREADCRUMB ─── */}
             <div className="pt-28 pb-0 bg-gray-50 border-b border-gray-100 print:hidden">
                 <div className="max-w-4xl mx-auto px-6 py-3 flex items-center gap-2 text-xs text-gray-400 font-mono">
-                    <Link to="/" className="hover:text-maroon-600 transition-colors">Home</Link>
+                    <Link to="/" className="hover:text-maroon-600 transition-all hover:scale-105">Home</Link>
                     <ChevronRight size={12} />
-                    <span className="text-gray-500">Intelligence Brief</span>
+                    <Link to="/" className="hover:text-maroon-600 transition-all hover:scale-105">Intelligence Brief</Link>
                     <ChevronRight size={12} />
                     <span className="text-gray-700 font-semibold truncate max-w-xs">{getTitle(item)}</span>
                 </div>
@@ -250,7 +250,7 @@ export const PublicDetail: React.FC = () => {
             </div>
 
             {/* ─── COVER IMAGE ─── */}
-            {coverImage?.src && (
+            {coverImage?.src && !item.meta?.pdfUrl && (
                 <div className="max-w-4xl mx-auto px-6 pt-10">
                     <figure>
                         <img
@@ -267,8 +267,32 @@ export const PublicDetail: React.FC = () => {
 
             {/* ─── ARTICLE BODY ─── */}
             <main className="max-w-4xl mx-auto px-6 py-12">
+                {/* Primary PDF Viewer (if PDF source article) */}
+                {item.meta?.pdfUrl && (
+                    <div className="mb-12 w-full h-[85vh] border border-gray-200 rounded-xl overflow-hidden shadow-2xl bg-gray-50 flex flex-col animate-scale-in">
+                        <div className="bg-slate-900 p-4 border-b border-gray-800 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-maroon-600 rounded-lg">
+                                    <FileText size={18} className="text-white" />
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black text-white uppercase tracking-widest block leading-none">Intelligence Bulletin Asset</span>
+                                    <span className="text-[12px] font-bold text-slate-400 truncate max-w-xs">{item.meta.pdfName || 'Source Document'}</span>
+                                </div>
+                            </div>
+                            <a href={item.meta.pdfUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] font-black bg-white/10 text-white border border-white/20 px-4 py-2 rounded-lg hover:bg-white hover:text-slate-900 transition-all uppercase tracking-widest">
+                                Expand Source
+                            </a>
+                        </div>
+                        <iframe src={`${item.meta.pdfUrl}#toolbar=0`} className="w-full flex-1 border-none" title="PDF Intelligence Viewer" />
+                    </div>
+                )}
+
                 {bodyBlocks.length > 0 ? (
                     bodyBlocks.map((blockValue, index) => {
+                        // Skip rendering the PDF block again if we already showed the hero viewer
+                        if (blockValue.type === 'pdf') return null;
+                        
                         const definition = template?.blocks.find(b => b.id === blockValue.blockId) || {
                             id: blockValue.blockId,
                             type: blockValue.type as any,
@@ -280,9 +304,9 @@ export const PublicDetail: React.FC = () => {
                             </div>
                         );
                     })
-                ) : (
+                ) : !item.meta?.pdfUrl ? (
                     <p className="text-gray-400 italic text-center py-10">No body content available for this article.</p>
-                )}
+                ) : null}
 
                 {/* Original PDF link */}
                 {item.meta?.pdfUrl && (

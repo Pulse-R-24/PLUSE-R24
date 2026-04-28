@@ -265,20 +265,24 @@ export const storageService = {
     return publicUrlData.publicUrl;
   },
 
-  uploadPdf: async (file: File): Promise<string | null> => {
+  uploadPdf: async (file: File): Promise<string> => {
     const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     const { data, error } = await supabase.storage
       .from('news-pdfs')
       .upload(fileName, file, { contentType: 'application/pdf' });
 
     if (error) {
-      console.warn('PDF upload skipped (bucket may not exist):', error.message);
-      return null;
+      console.error('PDF upload error:', error);
+      throw new Error(error.message || 'Failed to upload PDF to storage');
     }
 
     const { data: publicUrlData } = supabase.storage
       .from('news-pdfs')
       .getPublicUrl(fileName);
+
+    if (!publicUrlData?.publicUrl) {
+      throw new Error('Failed to generate public URL for PDF');
+    }
 
     return publicUrlData.publicUrl;
   },

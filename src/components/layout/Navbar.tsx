@@ -48,8 +48,20 @@ export const Navbar: React.FC = () => {
                     <div className="flex items-center justify-end gap-3 md:gap-5 order-2 md:order-none">
                         {/* Desktop nav links */}
                         <div className="hidden lg:flex items-center gap-8">
-
-                            <Link to="/?section=about" className="text-gray-600 hover:text-maroon-600 font-inter text-sm font-medium transition-all hover:scale-105">
+                            <Link 
+                                to="/?section=about" 
+                                onClick={() => {
+                                    if (window.location.hash === '#/' || window.location.hash === '') {
+                                        const el = document.getElementById('about');
+                                        if (el) {
+                                            const offset = 80;
+                                            const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+                                            window.scrollTo({ top, behavior: 'smooth' });
+                                        }
+                                    }
+                                }}
+                                className="text-gray-600 hover:text-maroon-600 font-inter text-sm font-medium transition-all hover:scale-105"
+                            >
                                 About Us
                             </Link>
                             <div className="flex items-center gap-2 px-3 py-1.5 bg-maroon-50 rounded-full border border-maroon-100">
@@ -89,7 +101,17 @@ export const Navbar: React.FC = () => {
 
                         <Link
                             to="/?section=about"
-                            onClick={() => setMobileOpen(false)}
+                            onClick={() => {
+                                setMobileOpen(false);
+                                if (window.location.hash === '#/' || window.location.hash === '') {
+                                    const el = document.getElementById('about');
+                                    if (el) {
+                                        const offset = 80;
+                                        const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+                                        window.scrollTo({ top, behavior: 'smooth' });
+                                    }
+                                }
+                            }}
                             className="text-gray-700 hover:text-maroon-600 font-inter text-sm font-semibold"
                         >
                             About Us

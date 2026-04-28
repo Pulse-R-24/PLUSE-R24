@@ -3,7 +3,7 @@ import { Link, useNavigate, Routes, Route, useLocation } from 'react-router-dom'
 import {
     LayoutDashboard, FileText, PlusCircle, CheckSquare,
     Settings, LogOut, FileUp, Image, Sun, Moon,
-    Bell, ChevronDown, BarChart2, Menu, X, Mail
+    Bell, ChevronDown, BarChart2, Menu, X, Mail, Sparkles
 } from 'lucide-react';
 import { storageService } from '../../services/storageService';
 import { Admin } from '../../types';
@@ -15,6 +15,8 @@ import { AdminLayouts } from './AdminLayouts';
 import { AdminPdfUpload } from './AdminPdfUpload';
 import { AdminMedia } from './AdminMedia';
 import { AdminEmail } from './AdminEmail';
+import { AdminAiGenerator } from './AdminAiGenerator';
+import { AdminOsintApprovals } from './AdminOsintApprovals';
 import { useDarkMode } from '../../hooks/useDarkMode';
 
 const NAV_SECTIONS = [
@@ -25,15 +27,16 @@ const NAV_SECTIONS = [
             { label: 'All Articles', path: '/admin/list', icon: FileText },
             { label: 'Add Article', path: '/admin/create', icon: PlusCircle },
             { label: 'Approvals', path: '/admin/approvals', icon: CheckSquare },
+            { label: 'OSINT Approvals', path: '/admin/osint-approvals', icon: Sparkles },
         ]
     },
     {
         label: 'Media & Tools',
         items: [
             { label: 'PDF Import', path: '/admin/pdf-upload', icon: FileUp },
+            { label: 'AI Intel Gatherer', path: '/admin/ai-news', icon: Sparkles },
             { label: 'Media Library', path: '/admin/media', icon: Image },
-            { label: 'Analytics', path: '/admin/dashboard', icon: BarChart2 },
-            { label: 'Email Dashboard', path: '/admin/email', icon: Mail },
+            { label: 'Newsletter Dashboard', path: '/admin/email', icon: Mail },
         ]
     },
     {
@@ -239,8 +242,10 @@ export const AdminLayout: React.FC = () => {
                             <Route path="create" element={<AdminCreate />} />
                             <Route path="edit/:id" element={<AdminCreate />} />
                             <Route path="approvals" element={<AdminApprovals />} />
+                            <Route path="osint-approvals" element={<AdminOsintApprovals />} />
                             <Route path="layouts" element={<AdminLayouts />} />
                             <Route path="pdf-upload" element={<AdminPdfUpload />} />
+                            <Route path="ai-news" element={<AdminAiGenerator />} />
                             <Route path="media" element={<AdminMedia />} />
                             <Route path="email/*" element={<AdminEmail />} />
                         </Routes>

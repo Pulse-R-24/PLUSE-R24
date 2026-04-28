@@ -1,39 +1,19 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Calendar, ChevronRight, AlertTriangle, X } from 'lucide-react';
+import { Search, Calendar, ChevronRight, AlertTriangle, X, FileText } from 'lucide-react';
 import { storageService } from '../../services/storageService';
 import { osintService } from '../../services/osintService';
 import { supabase } from '../../services/supabaseClient';
 import { NewsItem } from '../../types';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
+import { STRATEGIC_CATEGORIES } from '../../constants';
 import { ThreatMap } from '../../components/ui/ThreatMap';
 import { LiveTicker } from '../../components/ui/LiveTicker';
 
 // National Intelligence Domains
 const ITEMS_PER_PAGE = 3;
-const DOMAINS = [
-    'All',
-    'Fire incidents',
-    'Political Violence',
-    'Civil Disturbances',
-    'Terrorist attack / incident',
-    'Critical Infrastructure accident',
-    'Power grid',
-    'Diplomatic Visits',
-    'Major Upcoming events',
-    'Public announcement',
-    'Cyber attacks',
-    'National Threat',
-    'VIP movements',
-    'Protest',
-    'Elections',
-    'long term issue (updates & Monitoring)',
-    'Natural Hazards',
-    'Travel Risk',
-    'Health Risk',
-    'Monitoring'
-];
+const DOMAINS = ['All', ...STRATEGIC_CATEGORIES];
 
 const isDomainTag = (tag: string) =>
     DOMAINS.some(domain => domain.toLowerCase() === tag.toLowerCase());
@@ -66,6 +46,32 @@ export const PublicHome: React.FC = () => {
     const [activeTag, setActiveTag] = useState('');
     const [activeMapFocus, setActiveMapFocus] = useState<[number, number] | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [tickerItems, setTickerItems] = useState<NewsItem[]>([
+        {
+            id: 'mock-1',
+            templateId: 'tpl-1764398847255',
+            status: 'published',
+            author: 'Pulse-R24 | Intelligence Sensor',
+            createdAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            severity: 'info',
+            tags: ['OSINT', 'National'],
+            blocks: [{ blockId: 'b1', type: 'title', value: 'Initializing live national intelligence feeds...' }]
+        },
+        {
+            id: 'mock-2',
+            templateId: 'tpl-1764398847255',
+            status: 'published',
+            author: 'Pulse-R24 | Intelligence Sensor',
+            createdAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            severity: 'info',
+            tags: ['OSINT', 'National'],
+            blocks: [{ blockId: 'b1', type: 'title', value: 'Scanning Tier-1 city security signals: Mumbai, Delhi, Bengaluru, Chennai...' }]
+        }
+    ]);
 
     const location = useLocation();
     const today = new Date();
@@ -74,7 +80,9 @@ export const PublicHome: React.FC = () => {
     const scrollToSection = useCallback((id: string) => {
         const el = document.getElementById(id);
         if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const offset = 80; // Approximate navbar height
+            const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
         }
     }, []);
 
@@ -107,9 +115,37 @@ export const PublicHome: React.FC = () => {
             ).sort((a, b) => new Date(b.publishedAt!).getTime() - new Date(a.publishedAt!).getTime());
 
             setItems(published);
+            
+            // 2. Fetch Live OSINT for the Ticker (Breaking News)
+            try {
+                const liveArticles = await osintService.fetchLiveNationalNews();
+                // EXCLUSIVE: Ticker now ONLY shows live OSINT news
+                setTickerItems(liveArticles);
+            } catch (err) {
+                console.error('Failed to fetch live OSINT for ticker:', err);
+                setTickerItems([]); // Do not fallback to manual uploads
+            }
+
             setLoading(false);
         };
         init();
+
+        // 3. Polling for live news updates every 60 seconds for true "Real-Time" feel
+        const tickerInterval = setInterval(async () => {
+            try {
+                const live = await osintService.fetchLiveNationalNews();
+                const currentPublished = await storageService.getNewsItems();
+                const now = new Date();
+                const published = currentPublished.filter(i =>
+                    i.status === 'published' && i.publishedAt && new Date(i.publishedAt) <= now
+                );
+                
+                // EXCLUSIVE: Ticker now ONLY shows live OSINT news
+                setTickerItems(live);
+            } catch (e) {
+                console.warn('Ticker poll failed:', e);
+            }
+        }, 60000); // 1 minute
 
         const channel = supabase.channel('public:news_items')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'news_items' }, () => {
@@ -117,7 +153,10 @@ export const PublicHome: React.FC = () => {
             })
             .subscribe();
 
-        return () => { supabase.removeChannel(channel); };
+        return () => { 
+            supabase.removeChannel(channel);
+            clearInterval(tickerInterval);
+        };
     }, []);
 
     const filteredItems = useMemo(() => {
@@ -258,22 +297,20 @@ export const PublicHome: React.FC = () => {
                         <div className="relative flex flex-col items-center justify-center lg:justify-end w-full h-full min-h-[500px]">
                             <ThreatMap items={paginatedItems} flyToArea={activeMapFocus} />
                             
-                            {/* Live News Ticker Strip attached right beneath the map */}
-                            <div className="w-full mt-4">
-                                <LiveTicker items={paginatedItems} onFlyTo={setActiveMapFocus} />
-                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* ─── STATUS STRIP ─── */}
-            <div className="bg-intel-800 py-4 px-6">
-                <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-inter">
-                    <div className="flex items-center gap-2">
-                    </div>
-                    <span className="text-intel-300 font-mono text-[11px]">{issueNumber}</span>
-                    <span className="text-intel-300 italic hidden md:block">Ranked by national incident impact and strategic significance</span>
+            {/* ─── STATUS STRIP / LIVE TICKER ─── */}
+            <div className="bg-black border-y border-gray-900 h-10 shadow-lg relative overflow-hidden">
+                <LiveTicker items={tickerItems.slice(0, 25)} onFlyTo={setActiveMapFocus} />
+                
+                {/* Overlay for Issue number to keep it visible but out of way of scrolling text */}
+                <div className="absolute right-0 top-0 bottom-0 px-6 bg-black/90 backdrop-blur-sm border-l border-gray-800 flex items-center z-10 pointer-events-none">
+                    <span className="text-gray-400 font-mono text-[10px] tracking-[0.1em] uppercase">
+                        {issueNumber}
+                    </span>
                 </div>
             </div>
 
@@ -347,51 +384,58 @@ export const PublicHome: React.FC = () => {
                             {!loading && <span className="ml-auto text-xs font-mono text-gray-400">{filteredItems.length} bulletins</span>}
                         </div>
 
-                        <Link
-                            key={featuredItem.id}
-                            to={`/news/${featuredItem.id}`}
-                            className="group flex flex-col md:grid md:grid-cols-2 md:gap-8 md:items-center mb-16"
-                        >
-                            {/* Image */}
-                            <div className="overflow-hidden rounded-sm mb-5 md:mb-0">
-                                {getImage(featuredItem) ? (
-                                    <img
-                                        src={getImage(featuredItem)!.src}
-                                        alt={getImage(featuredItem)!.caption}
-                                        className="w-full object-cover group-hover:scale-105 transition-transform duration-500 h-64 sm:h-72 md:h-80"
-                                    />
-                                ) : (
-                                    <div className="w-full bg-intel-800 flex items-center justify-center h-64 sm:h-72 md:h-80">
-                                        <span className="font-mono text-intel-400 text-sm uppercase tracking-widest">Intelligence Brief</span>
-                                    </div>
-                                )}
-                            </div>
+                        {featuredItem && (
+                            <Link
+                                key={featuredItem.id}
+                                to={`/news/${featuredItem.id}`}
+                                className="group flex flex-col md:grid md:grid-cols-2 md:gap-8 md:items-center mb-16"
+                            >
+                                {/* Image */}
+                                <div className="overflow-hidden rounded-sm mb-5 md:mb-0">
+                                    {getImage(featuredItem) ? (
+                                        <img
+                                            src={getImage(featuredItem)!.src}
+                                            alt={getImage(featuredItem)!.caption}
+                                            className="w-full object-cover group-hover:scale-105 transition-transform duration-500 h-64 sm:h-72 md:h-80"
+                                        />
+                                    ) : (
+                                        <div className="w-full bg-intel-800 flex items-center justify-center h-64 sm:h-72 md:h-80">
+                                            <span className="font-mono text-intel-400 text-sm uppercase tracking-widest">Intelligence Brief</span>
+                                        </div>
+                                    )}
+                                </div>
 
-                            {/* Text */}
-                            <div className="flex flex-col py-4">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <div className="h-px w-8 bg-maroon-500"></div>
-                                    <div className="w-2 h-2 rounded-full bg-maroon-500"></div>
-                                    <span className="text-xs text-maroon-600 font-mono uppercase tracking-widest font-semibold">Featured Report</span>
+                                {/* Text */}
+                                <div className="flex flex-col py-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="h-px w-8 bg-maroon-500"></div>
+                                        <div className="w-2 h-2 rounded-full bg-maroon-500"></div>
+                                        <span className="text-xs text-maroon-600 font-mono uppercase tracking-widest font-semibold">Featured Report</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        {getDomain(featuredItem) && <span className="text-maroon-600 font-bold text-xs uppercase tracking-wider">{getDomain(featuredItem)}</span>}
+                                        {featuredItem.tags?.filter(t => !isDomainTag(t)).slice(0, 1).map(tag => (
+                                            <span key={tag} className="text-[10px] font-mono uppercase tracking-wider text-gray-400 bg-gray-100 px-2 py-0.5">{tag}</span>
+                                        ))}
+                                        {featuredItem.meta?.pdfUrl && (
+                                            <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-maroon-600 bg-maroon-50 px-2 py-0.5 rounded border border-maroon-100">
+                                                <FileText size={10} /> PDF Bulletin
+                                            </span>
+                                        )}
+                                        <span className="text-xs font-mono text-gray-400 ml-auto">{getDate(featuredItem)}</span>
+                                    </div>
+                                    <h2 className="text-3xl font-clarendon font-black text-intel-900 group-hover:text-maroon-600 transition-colors mb-4 line-clamp-3">
+                                        {getTitle(featuredItem)}
+                                    </h2>
+                                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 font-inter">
+                                        {featuredItem.blocks.find(b => b.type === 'markdown')?.value as string}
+                                    </p>
+                                    <div className="flex items-center gap-2 text-maroon-600 font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all">
+                                        Read Full Brief <ChevronRight size={14} />
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-3 mb-3">
-                                    {getDomain(featuredItem) && <span className="text-maroon-600 font-bold text-xs uppercase tracking-wider">{getDomain(featuredItem)}</span>}
-                                    {featuredItem.tags?.filter(t => !isDomainTag(t)).slice(0, 1).map(tag => (
-                                        <span key={tag} className="text-[10px] font-mono uppercase tracking-wider text-gray-400 bg-gray-100 px-2 py-0.5">{tag}</span>
-                                    ))}
-                                    <span className="text-xs font-mono text-gray-400 ml-auto">{getDate(featuredItem)}</span>
-                                </div>
-                                <h3 className="font-playfair font-bold text-gray-900 leading-tight mb-3 group-hover:text-maroon-700 transition-colors text-3xl md:text-4xl">
-                                    {getTitle(featuredItem)}
-                                </h3>
-                                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-5">{getExcerpt(featuredItem)}</p>
-                                <div className="flex items-center gap-3 text-maroon-600 group-hover:text-maroon-800 transition-colors">
-                                    <div className="h-px w-8 bg-maroon-500 group-hover:w-12 transition-all duration-300"></div>
-                                    <div className="w-2 h-2 rounded-full bg-maroon-500"></div>
-                                    <span className="text-xs font-semibold uppercase tracking-widest">Read Full Brief</span>
-                                </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        )}
                     </>
                 )}
 
@@ -461,6 +505,11 @@ export const PublicHome: React.FC = () => {
                                             {item.tags?.filter(t => !isDomainTag(t)).slice(0, 1).map(tag => (
                                                 <span key={tag} className="text-[10px] font-mono uppercase tracking-wider text-gray-400 bg-gray-100 px-2 py-0.5">{tag}</span>
                                             ))}
+                                            {item.meta?.pdfUrl && (
+                                                <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-maroon-600 bg-maroon-50 px-2 py-0.5 rounded border border-maroon-100">
+                                                    <FileText size={10} /> PDF
+                                                </span>
+                                            )}
                                             <span className="text-xs font-mono text-gray-400 ml-auto">{getDate(item)}</span>
                                         </div>
                                         <h3 className="font-playfair font-bold text-gray-900 leading-tight mb-3 group-hover:text-maroon-700 transition-colors text-xl line-clamp-3">
@@ -562,23 +611,80 @@ export const PublicHome: React.FC = () => {
             </main>
 
             {/* About section */}
-            <section id="about" className="bg-white border-t border-gray-100 py-16">
-                <div className="max-w-6xl mx-auto px-6 lg:px-8">
-                    <div className="flex items-center gap-4 mb-8">
+            <section id="about" className="bg-white border-t border-gray-100 py-24">
+                <div className="max-w-5xl mx-auto px-6 lg:px-8">
+                    <div className="flex items-center gap-4 mb-12">
                         <div className="h-px w-10 bg-maroon-500"></div>
                         <div className="w-2.5 h-2.5 rounded-full bg-maroon-500"></div>
                         <span className="text-xs font-mono uppercase tracking-widest text-gray-500 font-semibold">About PULSE-R24</span>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                        <div className="md:col-span-3">
-                            <h2 className="font-clarendon text-3xl font-black text-intel-900 mb-4">
-                                Strategic situational awareness for decision makers
+
+                    <div className="space-y-12">
+                        <div className="space-y-6">
+                            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 leading-tight border-l-4 border-maroon-600 pl-6 py-2">
+                                INDIA'S FIRST INTELLIGENCE PRODUCT DELIVERED BY STUDENTS UNDER THE GUIDANCE OF SECURITY LEADERS AND PROFESSIONALS
                             </h2>
-                            <p className="text-gray-600 leading-relaxed">
-                                PULSE-R24 delivers concise, actionable intelligence briefs across geopolitics,
-                                defense, internal security, cyber threats, and economic risk. The platform
-                                supports rapid dissemination and structured approvals so the latest updates
-                                reach stakeholders without delay.
+                            
+                            <p className="text-gray-600 text-lg leading-relaxed">
+                                The Pulse-R24 is a structured, forward-looking intelligence product presented by the International Society for Security Professionals (ISSP) in collaboration with the students of Rashtriya Raksha University (RRU), Puducherry Campus, enrolled in the PGDM program in Security and Corporate Intelligence Management. Delivered each morning, the bulletin focuses on identifying emerging risks, early warning indicators, and upcoming developments that may impact organizational stability, business operations, and sectoral continuity.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-10 border-y border-gray-100">
+                            <div className="space-y-4">
+                                <h3 className="font-playfair text-xl font-bold text-maroon-800 uppercase tracking-wide">Evolution of Resilience</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    PULSE-R24 represents a significant evolution in business continuity and resilience management for Indian enterprises. Moving beyond conventional risk assessment models and static response frameworks, it delivers real-time, actionable intelligence across multiple critical risk vectors, aligned with an organization’s operational footprint and threat landscape.
+                                </p>
+                            </div>
+                            <div className="space-y-4">
+                                <h3 className="font-playfair text-xl font-bold text-maroon-800 uppercase tracking-wide">Strategic Impact</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    By integrating continuous monitoring with analytical prioritization, the platform enhances situational awareness, enables proactive risk mitigation, and supports informed executive decision-making to minimize operational and reputational disruptions. The launch of PULSE-R24 in partnership with ISSP underscores a strong commitment to bridging academia and industry.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-8 bg-gray-50 p-8 md:p-12 rounded-3xl">
+                            <h3 className="font-playfair text-2xl font-bold text-gray-900 mb-6">Leadership & Mentorship</h3>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                                <div className="space-y-2">
+                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Visionary Leadership</h4>
+                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. John Paul Manickam</p>
+                                    <p className="text-xs text-gray-500 leading-relaxed">Distinguished professional in corporate security. His forward-looking approach and deep domain expertise have been central to shaping the foundation and direction of this platform.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Strategic Support</h4>
+                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Rahul Ethirajan</p>
+                                    <p className="text-xs text-gray-500 leading-relaxed">Strategic insights and consistent guidance have contributed significantly to the relevance and execution of this bulletin.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Institutional Framework</h4>
+                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Arsh Ganeshan</p>
+                                    <p className="text-xs text-gray-500 leading-relaxed">Campus Director, whose administrative vision and emphasis on academic excellence provide a strong institutional framework.</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h4 className="text-maroon-700 font-bold uppercase tracking-widest text-xs">Academic Mentorship</h4>
+                                    <p className="text-sm text-gray-700 leading-relaxed font-semibold">Mr. Sharuhasan Shankar</p>
+                                    <p className="text-xs text-gray-500 leading-relaxed">Course Coordinator, ensuring the bulletin maintains high analytical standards and professional quality through hands-on mentorship.</p>
+                                </div>
+                            </div>
+
+                            <div className="mt-10 pt-8 border-t border-gray-200">
+                                <p className="text-gray-600 text-sm italic leading-relaxed">
+                                    A central role has been played by the students of RRU, Puducherry Campus, from the SCIM program. Their dedication, analytical rigor, and collaborative approach have been instrumental in delivering depth, accuracy, and consistency to the bulletin.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6 pt-8">
+                            <h3 className="font-playfair text-2xl font-bold text-gray-900">About Rashtriya Raksha University (RRU)</h3>
+                            <p className="text-gray-600 text-md leading-relaxed">
+                                Rashtriya Raksha University (RRU), Puducherry Campus, is a premier institution dedicated to advancing education, research, and capacity building in the domains of national security, policing, and strategic studies. As an Institution of National Importance, RRU contributes significantly to strengthening India’s internal security framework by developing skilled professionals capable of addressing evolving security challenges across public and private sectors.
+                            </p>
+                            <p className="text-gray-600 text-md leading-relaxed">
+                                The Puducherry Campus reflects this mandate through a multidisciplinary learning environment that integrates academic rigor with practical application. Its PGDM program in Security and Corporate Intelligence Management is designed to build expertise in risk analysis, corporate security strategy, and intelligence-led decision-making, aligned with contemporary industry requirements.
                             </p>
                         </div>
                     </div>

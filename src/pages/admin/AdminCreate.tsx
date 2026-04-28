@@ -22,6 +22,9 @@ import {
     generateSEO,
     improveText,
 } from '../../services/groqService';
+import {
+    STRATEGIC_CATEGORIES
+} from '../../constants';
 
 // ── Fixed standard fields (same as PDF upload review form) ────────────────────
 // These fields are always shown regardless of which template was used.
@@ -71,11 +74,22 @@ export const AdminCreate: React.FC = () => {
     // Mark dirty on any field change
     const markDirty = () => setIsDirty(true);
 
-    // ── Load existing article when editing ────────────────────────────────────
+    // ── Load existing article or prefill from AI ─────────────────────────────
     useEffect(() => {
         const init = async () => {
             const allTemplates = await storageService.getLayouts();
             setTemplate(allTemplates[0] || null);
+
+            // Handle prefill from AI Gatherer
+            const locationState = (window as any).history.state?.usr;
+            if (locationState?.prefill && !id) {
+                const { prefill } = locationState;
+                setTitle(prefill.title || '');
+                setExcerpt(prefill.excerpt || '');
+                setCategory(prefill.category || '');
+                setTags(prefill.tags || '');
+                setIsDirty(true);
+            }
 
             if (id) {
                 setInitialLoading(true);
@@ -426,13 +440,19 @@ export const AdminCreate: React.FC = () => {
                             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-intel-700 dark:text-slate-200 mb-4">
                                 Strategic Category
                             </label>
-                            <input
-                                type="text"
-                                className={inputCls}
-                                placeholder="e.g. Intelligence, Malware, APT"
-                                value={category}
-                                onChange={e => { setCategory(e.target.value); markDirty(); }}
-                            />
+                            <div className="relative">
+                                <select
+                                    className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none appearance-none cursor-pointer pr-8"
+                                    value={category}
+                                    onChange={e => { setCategory(e.target.value); markDirty(); }}
+                                >
+                                    <option value="">Select Category...</option>
+                                    {STRATEGIC_CATEGORIES.map(cat => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                            </div>
                         </Card>
                     </div>
                 </div>

@@ -3,11 +3,13 @@ import { CITY_COORDINATES, TIER_1_CITIES } from '../constants';
 
 // Authoritative Indian National Intelligence Sources
 const RSS_SOURCES = [
+  { name: 'Google News Breaking', url: 'https://news.google.com/rss/search?q=breaking+news+india+when:1h&hl=en-IN&gl=IN&ceid=IN:en' },
   { name: 'PIB Official', url: 'https://pib.gov.in/RssMain.aspx?ModId=6&Lang=2&Regid=3' },
+  { name: 'TOI Latest', url: 'https://timesofindia.indiatimes.com/rssfeedmostrecent.cms' },
+  { name: 'Hindustan Times', url: 'https://www.hindustantimes.com/rss/india-news/rssfeed.xml' },
   { name: 'The Hindu National', url: 'https://www.thehindu.com/news/national/feeder/default.rss' },
   { name: 'ANI India', url: 'https://www.aninews.in/rss/feed/' },
   { name: 'India Today National', url: 'https://www.indiatoday.in/rss/home' },
-  { name: 'TOI India', url: 'https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms' },
   { name: 'NDTV India', url: 'https://feeds.feedburner.com/ndtvnews-top-stories' }
 ];
 
@@ -52,47 +54,62 @@ function extractLocationTags(title: string, content: string): string[] {
 }
 
 export const osintService = {
-  fetchLiveNationalNews: async (): Promise<NewsItem[]> => {
+  /**
+   * Fetch and aggregate news for the public ticker
+   * Looser filtering to ensure high volume of "Live" signals
+   */
+  async fetchLiveNationalNews(): Promise<NewsItem[]> {
     try {
-      // Bypassing 3rd party cache by appending a unique 10-minute resolution timestamp
-      const cacheBust = Math.floor(Date.now() / 600000);
-
+      const cacheBust = Math.floor(Date.now() / 60000); // 1-minute cache
+      const allItems: NewsItem[] = [];
+      
       const fetchPromises = RSS_SOURCES.map(source => {
         const feedUrl = `${source.url}${source.url.includes('?') ? '&' : '?'}t=${cacheBust}`;
-        return fetch(`${RSS2JSON_BASE}${encodeURIComponent(feedUrl)}`)
-          .then(res => res.json())
+        const proxyUrl = `${RSS2JSON_BASE}${encodeURIComponent(feedUrl)}`;
+        
+        return fetch(proxyUrl)
+          .then(async res => {
+            if (!res.ok) {
+              const fallbackUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+              const fallbackRes = await fetch(fallbackUrl);
+              return fallbackRes.json();
+            }
+            return res.json();
+          })
           .then(data => ({ source: source.name, items: data.items || [] }))
-          .catch(err => {
-            console.warn(`OSINT: Failed to fetch from ${source.name}`, err);
-            return { source: source.name, items: [] };
-          });
+          .catch(() => ({ source: source.name, items: [] }));
       });
 
       const results = await Promise.all(fetchPromises);
-      const allItems: NewsItem[] = [];
 
       results.forEach(({ source, items }) => {
         items.forEach((item: any, index: number) => {
           const title = item.title || '';
           const description = item.description || '';
-          const severity = determineSeverity(title, description);
-          const tags = extractLocationTags(title, description);
-
-          // FILTER: Only keep items that mention at least one Tier-1 city
-          // Tags includes 'OSINT' by default, so we check if there's at least one more tag
-          // and that tag is NOT 'National' (unless it also has a Tier-1 city)
-          const hasTier1City = tags.some(tag => 
-            TIER_1_CITIES.some(city => tag.toLowerCase() === city.toLowerCase())
+          
+          // Looser criteria for the ticker: Tier-1 City OR Breaking Words OR National Keywords
+          const hasTier1City = TIER_1_CITIES.some(city => 
+            title.toLowerCase().includes(city.toLowerCase()) || 
+            description.toLowerCase().includes(city.toLowerCase())
           );
 
-          if (!hasTier1City) {
-            // Ignore this item as it doesn't focus on Tier-1 cities
+          const isBreaking = /breaking|alert|flash|live|urgent|just in/i.test(title) || 
+                             /breaking|alert|flash|live|urgent|just in/i.test(description);
+
+          const isSecurity = /security|intel|police|army|threat|incident|cyber|crime|disruption|hazards/i.test(title) ||
+                             /security|intel|police|army|threat|incident|cyber|crime|disruption|hazards/i.test(description);
+
+          if (!hasTier1City && !isBreaking && !isSecurity) {
+            // Still filter out completely irrelevant fluff (sports/celebs)
             return;
           }
           
+          const severity = determineSeverity(title, description);
+          const tags = extractLocationTags(title, description);
+
           allItems.push({
             id: `osint-${source}-${index}-${Date.now()}`,
-            templateId: 'tpl-1764398847255', // Verified standard template ID
+            templateId: 'tpl-1764398847255', 
             status: 'pending_approval',
             author: `${source} | Intelligence Feed`,
             createdAt: new Date().toISOString(),
@@ -125,7 +142,36 @@ export const osintService = {
         new Date(b.publishedAt!).getTime() - new Date(a.publishedAt!).getTime()
       ).slice(0, 30);
 
-      console.log(`OSINT Engine: Aggregated and processed ${sorted.length} national intelligence items.`);
+      if (sorted.length === 0) {
+        // Fallback static items if the feed is dry
+        return [
+          {
+            id: 'osint-fallback-1',
+            templateId: 'tpl-1764398847255',
+            status: 'published',
+            author: 'Pulse-R24 | National Intelligence',
+            createdAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            severity: 'info',
+            tags: ['OSINT', 'National'],
+            blocks: [{ blockId: 'b1', type: 'title', value: 'Monitoring national security parameters and organizational stability across Tier-1 cities.' }]
+          },
+          {
+            id: 'osint-fallback-2',
+            templateId: 'tpl-1764398847255',
+            status: 'published',
+            author: 'Pulse-R24 | Cyber Watch',
+            createdAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            severity: 'info',
+            tags: ['OSINT', 'Cyber crimes'],
+            blocks: [{ blockId: 'b1', type: 'title', value: 'System scanning for emerging digital threats and corporate espionage indicators.' }]
+          }
+        ];
+      }
+
       return sorted;
 
     } catch (error) {

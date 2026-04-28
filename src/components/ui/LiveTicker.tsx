@@ -16,8 +16,7 @@ interface LiveTickerProps {
 }
 
 export function LiveTicker({ items, onFlyTo }: LiveTickerProps) {
-  // Show up to 10 recent items in the live ticker, acting as a national feed.
-  const tickerItems = items.slice(0, 10);
+  const tickerItems = [...items, ...items, ...items];
 
   if (tickerItems.length === 0) return null;
 
@@ -28,20 +27,10 @@ export function LiveTicker({ items, onFlyTo }: LiveTickerProps) {
   };
 
   return (
-    <div className="w-full bg-slate-950 border-y border-slate-800 flex items-center shadow-inner overflow-hidden relative h-10 mt-2 md:mt-4 rounded-xl">
-      {/* Static Label Left - Clickable to Reset View */}
-      <div 
-        className="absolute left-0 top-0 bottom-0 z-10 bg-slate-900 border-r border-slate-800 px-4 flex items-center shadow-[10px_0_20px_-5px_rgba(0,0,0,0.8)] backdrop-blur cursor-pointer hover:bg-slate-800 transition-colors group"
-        onClick={() => handleFlyTo('national')}
-        title="Reset Map to National View"
-      >
-        <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-2 group-hover:scale-125 transition-transform"></div>
-        <span className="font-mono text-xs font-bold text-slate-200 tracking-[0.2em] group-hover:text-white transition-colors">BREAKING</span>
-      </div>
-
+    <div className="w-full flex items-center overflow-hidden relative h-full bg-black">
       {/* Scrolling Tape */}
       <div className="flex-1 overflow-hidden relative h-full">
-        <div className="animate-marquee whitespace-nowrap flex items-center h-full absolute pl-[120px]">
+        <div className="animate-marquee whitespace-nowrap flex items-center h-full absolute">
           {tickerItems.map((item, idx) => {
             const locTag = item.tags?.find(tag => CITY_COORDINATES[tag.toLowerCase()] !== undefined) || 'NATIONAL';
             const title = item.blocks.find(b => b.type === 'title')?.value as string || 'Untitled Intel';
@@ -54,8 +43,8 @@ export function LiveTicker({ items, onFlyTo }: LiveTickerProps) {
                   {item.severity}
                 </span>
                 {isOsint && (
-                  <span className="text-blue-400 font-mono text-[10px] uppercase font-bold mr-2 border border-blue-500/30 px-1 rounded bg-blue-500/10 flex-shrink-0">
-                    OSINT
+                  <span className="text-emerald-400 font-mono text-[9px] uppercase font-black mr-2 border border-emerald-500/30 px-1.5 py-0.5 rounded bg-emerald-500/10 flex-shrink-0 animate-pulse">
+                    LIVE
                   </span>
                 )}
                 <span className="text-maroon-300 font-mono text-xs uppercase tracking-wider font-bold mr-2 flex-shrink-0">
@@ -98,8 +87,6 @@ export function LiveTicker({ items, onFlyTo }: LiveTickerProps) {
         </div>
       </div>
       
-      {/* Right Gradient Mask */}
-      <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-950 to-transparent pointer-events-none z-10"></div>
     </div>
   );
 }

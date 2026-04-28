@@ -11,6 +11,8 @@ import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { useToast } from '../../context/ToastContext';
 import { MarkdownEditor } from '../../components/MarkdownEditor';
+import { STRATEGIC_CATEGORIES } from '../../constants';
+import { ChevronDown } from 'lucide-react';
 
 // Thin wrapper so the drop zone div keeps Card styling but passes drag events
 const DropZone: React.FC<{ isDragging: boolean; onDragOver: React.DragEventHandler; onDragLeave: React.DragEventHandler; onDrop: React.DragEventHandler; onClick: () => void; children: React.ReactNode }> = ({
@@ -102,17 +104,13 @@ export const AdminPdfUpload: React.FC = () => {
         try {
             setExtractProgress('☁️ Uploading PDF to secure storage…');
             const pdfUploadUrl = await storageService.uploadPdf(file);
-            if (pdfUploadUrl) {
-                setPdfUrl(pdfUploadUrl);
-                setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " "));
-                setExcerpt('PDF Document attached.');
-                setCategory('Intelligence');
-                setStage('review');
-                addToast('PDF uploaded successfully!', 'success');
-            } else {
-                addToast('Upload failed: No URL returned.', 'error');
-                setStage('upload');
-            }
+            
+            setPdfUrl(pdfUploadUrl);
+            setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " "));
+            setExcerpt('PDF Document attached.');
+            setCategory('Intelligence');
+            setStage('review');
+            addToast('PDF uploaded successfully!', 'success');
         } catch (err: any) {
             console.error('PDF upload error:', err);
             addToast(`Failed to upload PDF: ${err?.message || 'Unknown error'}`, 'error');
@@ -146,6 +144,7 @@ export const AdminPdfUpload: React.FC = () => {
             const blocks = [
                 { blockId: findBlockId('title'), type: 'title', value: title },
                 { blockId: findBlockId('excerpt'), type: 'excerpt', value: excerpt },
+                { blockId: findBlockId('image'), type: 'image', value: imageUrl ? { src: imageUrl, caption: imageCaption || 'Intelligence Brief Image' } : undefined },
                 { blockId: findBlockId('pdf'), type: 'pdf', value: { url: pdfUrl, filename: pdfFile?.name } },
                 { blockId: findBlockId('tags'), type: 'tags', value: tags.split(',').map(t => t.trim()).filter(Boolean) },
                 { blockId: findBlockId('category'), type: 'category', value: category },
@@ -331,7 +330,32 @@ export const AdminPdfUpload: React.FC = () => {
                                 />
                             </Card>
 
-                            {/* Body content removed since we directly embed the PDF now */}
+                            {/* PDF Preview */}
+                            <Card variant="glass" className="p-0 overflow-hidden border-2 border-maroon-500/20 shadow-2xl">
+                                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-1.5 bg-maroon-600 rounded-lg">
+                                            <FileText size={14} className="text-white" />
+                                        </div>
+                                        <span className="text-[10px] font-black text-white uppercase tracking-widest">Live Source Preview</span>
+                                    </div>
+                                    <a 
+                                        href={pdfUrl!} 
+                                        target="_blank" 
+                                        rel="noreferrer"
+                                        className="text-[9px] font-black text-maroon-400 uppercase tracking-widest hover:text-maroon-300 transition-colors"
+                                    >
+                                        Open in New Tab
+                                    </a>
+                                </div>
+                                <div className="aspect-[1/1.4] w-full bg-slate-800">
+                                    <iframe 
+                                        src={`${pdfUrl}#toolbar=0&navpanes=0`} 
+                                        className="w-full h-full border-none"
+                                        title="PDF Source Preview"
+                                    />
+                                </div>
+                            </Card>
                         </div>
 
                         <div className="col-span-12 lg:col-span-4 space-y-8">
@@ -358,17 +382,90 @@ export const AdminPdfUpload: React.FC = () => {
                                         onChange={e => setTags(e.target.value)}
                                         placeholder="Tags: malware, apt, india..."
                                     />
-                                    <input
-                                        type="text"
-                                        className="w-full bg-white dark:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                                        value={category}
-                                        onChange={e => setCategory(e.target.value)}
-                                        placeholder="Category..."
-                                    />
+                                    <div className="relative">
+                                        <select
+                                            className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none appearance-none cursor-pointer pr-8"
+                                            value={category}
+                                            onChange={e => setCategory(e.target.value)}
+                                        >
+                                            <option value="">Select Category...</option>
+                                            {STRATEGIC_CATEGORIES.map(cat => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
+                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                                    </div>
                                 </div>
                             </Card>
 
-                             {/* Cover Asset removed since we directly embed the PDF now */}
+                            {/* Cover Asset */}
+                            <Card variant="glass" className="p-6">
+                                <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-700 dark:text-slate-300 mb-4"> 
+                                    <Image size={12} className="text-maroon-500" />
+                                    Cover Asset (Optional)
+                                </label>
+                                
+                                {imageUrl ? (
+                                    <div className="relative group rounded-xl overflow-hidden aspect-video bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10">
+                                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                            <button 
+                                                onClick={() => setImageUrl('')}
+                                                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        <div className="flex gap-2 p-1 bg-slate-100 dark:bg-white/5 rounded-xl">
+                                            <button 
+                                                onClick={() => setImageMode('upload')}
+                                                className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${imageMode === 'upload' ? 'bg-white dark:bg-white/10 shadow-sm text-maroon-600' : 'text-slate-500'}`}
+                                            >
+                                                Upload
+                                            </button>
+                                            <button 
+                                                onClick={() => setImageMode('url')}
+                                                className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${imageMode === 'url' ? 'bg-white dark:bg-white/10 shadow-sm text-maroon-600' : 'text-slate-500'}`}
+                                            >
+                                                URL
+                                            </button>
+                                        </div>
+
+                                        {imageMode === 'upload' ? (
+                                            <div 
+                                                onClick={() => imageUploadRef.current?.click()}
+                                                className="border-2 border-dashed border-slate-200 dark:border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-3 hover:border-maroon-400 hover:bg-maroon-50/30 transition-all cursor-pointer"
+                                            >
+                                                <div className="p-3 bg-slate-100 dark:bg-white/5 rounded-full text-slate-400">
+                                                    {imageUploading ? <Loader2 size={24} className="animate-spin text-maroon-500" /> : <Upload size={24} />}
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest">Select Image</p>
+                                                    <p className="text-[9px] text-slate-400 mt-1 uppercase tracking-widest">Max 2MB</p>
+                                                </div>
+                                                <input 
+                                                    type="file" 
+                                                    ref={imageUploadRef}
+                                                    className="hidden" 
+                                                    accept="image/*"
+                                                    onChange={e => e.target.files?.[0] && handleImageUpload(e.target.files[0])}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                className="w-full bg-white dark:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                                value={imageUrl}
+                                                onChange={e => setImageUrl(e.target.value)}
+                                                placeholder="https://images.unsplash.com/..."
+                                            />
+                                        )}
+                                    </div>
+                                )}
+                            </Card>
                         </div>
                     </div>
 

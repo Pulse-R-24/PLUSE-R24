@@ -6,6 +6,7 @@ import { EmailCompose } from './email/EmailCompose';
 import { EmailTemplates } from './email/EmailTemplates';
 import { EmailAutomation } from './email/EmailAutomation';
 import { EmailSettings } from './email/EmailSettings';
+import { NewsletterDashboard } from './email/NewsletterDashboard';
 import { storageService } from '../../services/storageService';
 import { Email, Label } from '../../types';
 
@@ -18,7 +19,7 @@ const SIDEBAR_ITEMS = [
   { label: 'Spam', path: 'spam', icon: ShieldAlert },
   { label: 'Trash', path: 'trash', icon: Trash2 },
   { divider: true },
-  { label: 'Templates', path: 'templates', icon: FileEdit },
+  { label: 'Newsletter', path: 'newsletter', icon: FileEdit },
   { label: 'Automation', path: 'automation', icon: Cpu },
   { label: 'Audience', path: 'audience', icon: Users },
   { label: 'Settings', path: 'settings', icon: Settings },
@@ -135,6 +136,7 @@ export const AdminEmail: React.FC = () => {
           <Route path="trash" element={<EmailInbox folder="trash" onReply={handleReply} />} />
           <Route path="label/:labelName" element={<EmailInbox folder="all" onReply={handleReply} />} />
           <Route path="templates" element={<EmailTemplates />} />
+          <Route path="newsletter" element={<NewsletterDashboard />} />
           <Route path="automation" element={<EmailAutomation />} />
           <Route path="settings" element={<EmailSettings />} />
         </Routes>

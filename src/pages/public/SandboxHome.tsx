@@ -5,10 +5,11 @@ import { storageService } from '../../services/storageService';
 import { NewsItem } from '../../types';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
+import { STRATEGIC_CATEGORIES } from '../../constants';
 import { ThreatMap } from '../../components/ui/ThreatMap';
 
 // National Intelligence Domains
-const DOMAINS = ['All', 'Fire incidents', 'Political Violence', 'Civil Disturbances', 'Terrorist attack / incident', 'Cyber attacks', 'National Threat', 'Monitoring'];
+const DOMAINS = ['All', ...STRATEGIC_CATEGORIES];
 
 const isDomainTag = (tag: string) => DOMAINS.some(domain => domain.toLowerCase() === tag.toLowerCase());
 
