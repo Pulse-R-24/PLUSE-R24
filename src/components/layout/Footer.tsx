@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
                                             Post Graduate Diploma in Security and Corporate Intelligence Management
                                         </p>
                                         <p className="text-[11px] text-white/30 mt-1.5 font-medium">Batch of 2025-2026</p>
-                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University, Puducherry Campus</p>
                                     </div>
                                 </div>
                                 <div className="pt-6 border-t border-white/5 group flex gap-4">
@@ -90,7 +90,7 @@ export const Footer: React.FC = () => {
                                             Post Graduate Diploma in Cyber Security and Digital Forensics
                                         </p>
                                         <p className="text-[11px] text-white/30 mt-1.5 font-medium">Batch of 2025-2026</p>
-                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University</p>
+                                        <p className="text-[10px] text-maroon-500/80 mt-1 font-bold uppercase tracking-wider">Rashtriya Raksha University, Puducherry Campus</p>
                                     </div>
                                 </div>
                             </div>
