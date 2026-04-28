@@ -80,7 +80,11 @@ export const BlockRenderer: React.FC<{ block: LayoutBlock; value: any }> = ({ bl
                             Open PDF
                         </a>
                     </div>
-                    <iframe src={value.url} className="w-full flex-1 border-none" title="PDF Viewer" />
+                    <iframe 
+                        src={`https://docs.google.com/viewer?url=${encodeURIComponent(value.url)}&embedded=true`} 
+                        className="w-full flex-1 border-none bg-white" 
+                        title="PDF Viewer" 
+                    />
                 </div>
             );
 

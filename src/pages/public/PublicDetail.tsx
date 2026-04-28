@@ -284,7 +284,11 @@ export const PublicDetail: React.FC = () => {
                                 Expand Source
                             </a>
                         </div>
-                        <iframe src={`${item.meta.pdfUrl}#toolbar=0`} className="w-full flex-1 border-none" title="PDF Intelligence Viewer" />
+                        <iframe 
+                            src={`https://docs.google.com/viewer?url=${encodeURIComponent(item.meta.pdfUrl)}&embedded=true`} 
+                            className="w-full flex-1 border-none bg-white" 
+                            title="PDF Intelligence Viewer" 
+                        />
                     </div>
                 )}
 

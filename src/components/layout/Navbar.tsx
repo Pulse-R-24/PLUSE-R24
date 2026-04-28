@@ -16,7 +16,7 @@ export const Navbar: React.FC = () => {
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
 
                 {/* Responsive Header Layout */}
-                <div className="flex flex-wrap md:grid md:grid-cols-3 items-center justify-between gap-y-3">
+                <div className="flex items-center justify-between">
 
                     {/* LEFT - RRU Logo */}
                     <a href="https://rru.ac.in/campuses/puducherry" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 md:gap-3 order-1 md:order-none group hover:opacity-90 transition-all cursor-pointer">
@@ -36,7 +36,7 @@ export const Navbar: React.FC = () => {
                     </a>
 
                     {/* CENTER - PULSE-R24 brand */}
-                    <div className="flex justify-center flex-1 min-w-[50%] md:min-w-0 order-3 md:order-none w-full md:w-auto mt-2 md:mt-0">
+                    <div className="flex-1 flex justify-center px-2">
                         <Link to="/" className="flex flex-col items-center">
                             <h1 className="font-clarendon text-xl sm:text-2xl md:text-3xl font-black tracking-tight leading-none text-center text-maroon-600">
                                 PULSE-R<sup className="text-base sm:text-lg">24</sup>

@@ -260,16 +260,16 @@ export const PublicHome: React.FC = () => {
             <Navbar />
 
             {/* ─── HERO SECTION ─── */}
-            <section className="min-h-screen flex items-center pt-20 pb-12 overflow-hidden">
+            <section className="min-h-screen flex items-center pt-32 sm:pt-40 pb-12 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         {/* Left: Text Content */}
                         <div className="relative z-10">
                             {/* Section Label */}
-                            <div className="flex items-center gap-3 mb-8">
-                                <div className="h-px w-10 bg-maroon-500"></div>
-                                <div className="w-2.5 h-2.5 rounded-full bg-maroon-500"></div>
-                                <span className="text-xs font-mono uppercase tracking-widest text-gray-500 font-semibold">
+                            <div className="flex items-center gap-3 mb-6 md:mb-8">
+                                <div className="h-px w-6 md:w-10 bg-maroon-500"></div>
+                                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-maroon-500"></div>
+                                <span className="text-[10px] md:text-xs font-mono uppercase tracking-widest text-gray-500 font-semibold leading-tight">
                                     Where the Nation's Pulse Meets Insights
                                 </span>
                             </div>
