@@ -12,7 +12,8 @@ import { Card } from '../../components/ui/Card';
 import { useToast } from '../../context/ToastContext';
 import { MarkdownEditor } from '../../components/MarkdownEditor';
 import { STRATEGIC_CATEGORIES } from '../../constants';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Calendar as CalendarIcon } from 'lucide-react';
+import { format, parse } from 'date-fns';
 
 // Thin wrapper so the drop zone div keeps Card styling but passes drag events
 const DropZone: React.FC<{ isDragging: boolean; onDragOver: React.DragEventHandler; onDragLeave: React.DragEventHandler; onDrop: React.DragEventHandler; onClick: () => void; children: React.ReactNode }> = ({
@@ -53,6 +54,7 @@ export const AdminPdfUpload: React.FC = () => {
     const [tags, setTags] = useState('');
     const [category, setCategory] = useState('');
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [publishedAt, setPublishedAt] = useState(format(new Date(), 'yyyy-MM-dd'));
 
     // Cover image
     const imageUploadRef = useRef<HTMLInputElement>(null);
@@ -107,6 +109,28 @@ export const AdminPdfUpload: React.FC = () => {
             
             setPdfUrl(pdfUploadUrl);
             setTitle(file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " "));
+            
+            // Try to extract date from filename
+            const dateMatch = file.name.match(/(\d{4}-\d{2}-\d{2})|(\d{2}-\d{2}-\d{4})|(\d{8})/);
+            if (dateMatch) {
+                let foundDate = dateMatch[0];
+                if (/^\d{8}$/.test(foundDate)) {
+                    // YYYYMMDD
+                    const y = foundDate.substring(0, 4);
+                    const m = foundDate.substring(4, 6);
+                    const d = foundDate.substring(6, 8);
+                    setPublishedAt(`${y}-${m}-${d}`);
+                } else if (/^\d{2}-\d{2}-\d{4}$/.test(foundDate)) {
+                    // DD-MM-YYYY
+                    const parts = foundDate.split('-');
+                    setPublishedAt(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                } else {
+                    // YYYY-MM-DD
+                    setPublishedAt(foundDate);
+                }
+                addToast(`Extracted date ${foundDate} from filename`, 'info');
+            }
+
             setExcerpt('PDF Document attached.');
             setCategory('Intelligence');
             setStage('review');
@@ -158,7 +182,7 @@ export const AdminPdfUpload: React.FC = () => {
                 tags: tags.split(',').map(t => t.trim()).filter(Boolean),
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
-                publishedAt: status === 'published' ? new Date().toISOString() : undefined,
+                publishedAt: status === 'published' ? new Date(publishedAt).toISOString() : undefined,
                 status,
                 meta: {
                     source: 'pdf_upload',
@@ -368,6 +392,21 @@ export const AdminPdfUpload: React.FC = () => {
                                     value={excerpt}
                                     onChange={e => setExcerpt(e.target.value)}
                                     placeholder="Brief executive summary..."
+                                />
+                            </Card>
+
+                            {/* Temporal Marker */}
+                            <Card variant="glass" className="p-6">
+                                <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-slate-700 dark:text-slate-300 mb-4">
+                                    <CalendarIcon size={12} className="text-maroon-500" />
+                                    Temporal Marker (Date)
+                                </label>
+                                <input
+                                    type="date"
+                                    min="2025-12-01"
+                                    className="w-full bg-white dark:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none"
+                                    value={publishedAt}
+                                    onChange={e => setPublishedAt(e.target.value)}
                                 />
                             </Card>
 

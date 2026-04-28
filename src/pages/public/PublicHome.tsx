@@ -19,11 +19,11 @@ const isDomainTag = (tag: string) =>
     DOMAINS.some(domain => domain.toLowerCase() === tag.toLowerCase());
 
 function getIssueNumber(): string {
-    const base = 89;
-    const baseDate = new Date('2026-02-27');
+    const base = 1; // Resetting base or keeping it? The user said start date is 2025-12-01.
+    const baseDate = new Date('2025-12-01');
     const today = new Date();
     const diff = Math.floor((today.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24));
-    return `ISSP_RRUPY/Issue No.${base + diff}/2026`;
+    return `ISSP_RRUPY/Issue No.${base + diff}/2025-26`;
 }
 
 function formatBulletinDate(date: Date): string {
@@ -333,12 +333,12 @@ export const PublicHome: React.FC = () => {
                             </div>
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                <input type="date" className="pl-9 pr-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-maroon-500" value={startDateInput} onChange={e => setStartDateInput(e.target.value)} />
+                                <input type="date" min="2025-12-01" className="pl-9 pr-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-maroon-500" value={startDateInput} onChange={e => setStartDateInput(e.target.value)} />
                             </div>
                             <span className="text-gray-400 text-sm">to</span>
                             <div className="relative">
                                 <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                                <input type="date" className="pl-9 pr-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-maroon-500" value={endDateInput} onChange={e => setEndDateInput(e.target.value)} />
+                                <input type="date" min="2025-12-01" className="pl-9 pr-3 py-2 bg-white border border-gray-200 text-gray-700 text-sm focus:outline-none focus:border-maroon-500" value={endDateInput} onChange={e => setEndDateInput(e.target.value)} />
                             </div>
                             <button onClick={handleSearch} className="px-5 py-2 bg-maroon-600 hover:bg-maroon-700 text-white text-sm font-semibold uppercase tracking-wider transition-colors">
                                 Search

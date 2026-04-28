@@ -511,6 +511,7 @@ export const AdminCreate: React.FC = () => {
                         </label>
                         <input
                             type="datetime-local"
+                            min="2025-12-01T00:00"
                             className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-bold border border-slate-300 dark:border-slate-600 rounded-xl p-3.5 focus:ring-2 focus:ring-maroon-500/30 focus:border-maroon-500 outline-none"
                             value={scheduledAt}
                             onChange={e => { setScheduledAt(e.target.value); markDirty(); }}
