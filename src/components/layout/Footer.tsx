@@ -58,22 +58,36 @@ export const Footer: React.FC = () => {
                     </div>
 
                     {/* Institutional Links */}
-                    <div>
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                            <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Initiative By</h3>
+                    <div className="space-y-8">
+                        <div>
+                            <div className="flex items-center gap-2 mb-6">
+                                <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                                <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Initiative By</h3>
+                            </div>
+                            <ul className="space-y-4">
+                                <li>
+                                    <span className="block text-sm font-medium text-white/90 leading-relaxed">
+                                        Post Graduate Diploma in Security and Corporate Intelligence Management 2025-2026 batch
+                                    </span>
+                                    <span className="block text-xs text-white/50 mt-1">Rashtriya Raksha University, Puducherry</span>
+                                </li>
+                                <li className="pt-2">
+                                    <span className="block text-xs text-white/40 mb-1">Guided By</span>
+                                    <span className="block text-sm font-medium text-white/90">International Society for Security Professionals</span>
+                                    <span className="block text-xs font-mono text-red-400 mt-1">ISSP</span>
+                                </li>
+                            </ul>
                         </div>
-                        <ul className="space-y-4">
-                            <li>
-                                <span className="block text-sm font-medium text-white/90">PGD (2025-26)</span>
-                                <span className="block text-xs text-white/50 mt-1">Rashtriya Raksha University, Puducherry</span>
-                            </li>
-                            <li className="pt-2">
-                                <span className="block text-xs text-white/40 mb-1">Guided By</span>
-                                <span className="block text-sm font-medium text-white/90">International Society for Security Professionals</span>
-                                <span className="block text-xs font-mono text-red-400 mt-1">ISSP</span>
-                            </li>
-                        </ul>
+
+                        <div>
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                                <h3 className="font-semibold text-white/50 tracking-wide uppercase text-xs">Technical Team</h3>
+                            </div>
+                            <span className="block text-sm font-medium text-white/90 leading-relaxed">
+                                Post Graduate Diploma in Cyber Security and Digital Forensics 2025-2026 batch
+                            </span>
+                        </div>
                     </div>
 
                     {/* Connect */}
